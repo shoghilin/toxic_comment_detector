@@ -1,0 +1,58 @@
+<!DOCTYPE  html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>留言板練習</title>
+        <script>
+            window.onload = function(){
+                
+                var oMessageBox = document.getElementById("messageBox");
+                var oInput = document.getElementById("myInput");
+                var oPostBtn = document.getElementById("doPost");
+
+                oInput.addEventListener("keypress", function(event) {
+                    if (event.key === "Enter") {
+                        event.preventDefault();
+                        document.getElementById("doPost").click();
+                    }
+                });
+                
+                oPostBtn.onclick = function(){
+                    if(oInput.value){
+                        // check is it toxic comment or not
+                        checkToxic(oInput.value);
+
+                        //寫入發表留言的時間
+                        var oTime = document.createElement("div");
+                        oTime.className = "time";
+                        var myDate = new  Date();
+                        oTime.innerHTML = myDate.toLocaleString();
+                        oMessageBox.appendChild(oTime);
+                        
+                        //寫入留言內容
+                        var oMessageContent = document.createElement("div");
+                        oMessageContent.className = "message_content";
+                        oMessageContent.innerHTML = oInput.value;
+                        oInput.value = "";
+                        oMessageBox.appendChild(oMessageContent);
+                    }
+                    
+                }                
+                
+            }
+
+            function checkToxic(text){
+                window.alert(text);
+            }
+        
+        </script>
+
+    </head>
+    <body>
+	<div class="content">
+        <div class="title">使用者留言</div>
+        <div class="message_box" id="messageBox"></div>
+        <div><input id="myInput" type="text" placeholder="請輸入留言類容"><button id="doPost">提交</button></div>
+    </div>
+</body>
+</html>

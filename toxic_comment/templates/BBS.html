@@ -1,0 +1,71 @@
+<!DOCTYPE  html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>留言板練習</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+        <script>            
+            window.onload = function(){                
+                var oMessageBox = document.getElementById("messageBox");
+                var oInput = document.getElementById("myInput");
+                var oPostBtn = document.getElementById("doPost");
+
+                oInput.addEventListener("keypress", function(event) {
+                    if (event.key === "Enter") {
+                        event.preventDefault();
+                        document.getElementById("doPost").click();
+                    }
+                });
+                
+                oPostBtn.onclick = function(){
+                    if(oInput.value){
+                        $.ajax(
+                            {
+                                type:"GET",
+                                url:"/toxic_detect_post",
+                                data:{
+                                    "text": oInput.value
+                                },
+                                success: function(data){
+                                    $( '#message' ).text(data.toxic);
+                                    if(data.toxic){
+                                        window.alert("Toxic comment detected!!!\ntoxic type : [" + data.toxic_type + "]");
+                                        oInput.value = "";
+                                    }
+                                    else{
+                                        console.log('test value');
+                                        //寫入發表留言的時間
+                                        var oTime = document.createElement("div");
+                                        oTime.className = "time";
+                                        var myDate = new  Date();
+                                        oTime.innerHTML = myDate.toLocaleString();
+                                        oMessageBox.appendChild(oTime);
+                                        
+                                        //寫入留言內容
+                                        var oMessageContent = document.createElement("div");
+                                        oMessageContent.className = "message_content";
+                                        oMessageContent.innerHTML = oInput.value;
+                                        oInput.value = "";
+                                        oMessageBox.appendChild(oMessageContent);
+                                    }
+                                }
+                            }
+                        )
+                    }                    
+                }
+            }        
+        </script>
+
+    </head>
+    <body>
+	<div class="content">
+        <div class="title">使用者留言</div>
+        <div class="message_box" id="messageBox"></div>
+        <form action="" method="POST" name="form">
+            {% csrf_token %}
+            <div><input id="myInput" type="text" placeholder="請輸入留言類容" name="input_text"/>
+            <input id="doPost" type="button" value="提交" /></div>            
+        </form>
+    </div>
+</body>
+</html>
